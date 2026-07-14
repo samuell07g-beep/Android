@@ -5,6 +5,7 @@ import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes, initializeAdminUser } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
+import { runMigrations } from "./migrate";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -29,6 +30,9 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  // Run database migrations
+  await runMigrations();
+
   // Initialize admin user
   await initializeAdminUser();
 
